@@ -1,0 +1,34 @@
+body {
+  font-family: Roboto;
+}
+#channelsTable {
+  margin: 3%;
+}
+
+#tabletitle{
+  background: cornflowerblue;
+}
+
+.case {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  background: #ebebeb;
+}
+
+.edit{
+  padding-top: 10px;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+}
+
+.edit:hover{
+  background: gainsboro;
+}
+.table{
+  padding: 2px;
+}

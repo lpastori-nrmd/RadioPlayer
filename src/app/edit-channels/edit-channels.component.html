@@ -1,0 +1,28 @@
+<head>
+  <title>Edit Channel</title>
+  <base href="/editChannel">
+</head>
+
+<app-header></app-header>
+<body>
+<div id="formulaire">
+  <form id="form" action="" name="channels" [formGroup]="form" (ngSubmit)="modifyRadio(form.value)">
+    <label for="name" > Name of the radio :</label><br> <input type="text" id="name" formControlName="name" value="{{radio.name}}" required><br><br>
+
+    <label for="url"> Url of the radio </label><br><input type="text" id="url" formControlName="url" value="{{radio.url}}" required> <br><br>
+
+    <div id="radioType">
+      <label for="direct"> direct : </label> <input type="radio" formControlName="type" name="type" id="direct" value="direct">
+
+      <label for="shoutcast"> shoutcast : </label> <input type="radio" formControlName="type" name="type" id="shoutcast" value="shoutcast">
+
+      <label for="icecast"> icecast : </label> <input type="radio" formControlName="type" name="type" id="icecast" value="icecast">
+
+    </div>
+    <input type="submit" value="submit">
+  </form>
+  <button routerLink="/admin"> Cancel </button>
+  <button (click)="test()">test</button>
+
+</div>
+</body>

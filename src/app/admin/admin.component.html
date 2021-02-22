@@ -1,0 +1,37 @@
+<head>
+  <title>Admin</title>
+  <base href="/admin">
+</head>
+<app-header></app-header>
+<body>
+  <div id="channelsTable">
+    <table id="tableChannel" class="table table-striped">
+      <tr>
+        <th> Name </th>
+        <th> URL </th>
+        <th> type</th>
+      </tr>
+      <tr  id="{{radio.name}}" *ngFor="let radio of radios">
+        <td >
+          {{radio.name}}
+        </td>
+        <td >
+          {{radio.url}}
+        </td>
+        <td >
+          {{radio.type}}
+        </td>
+        <td  (click)="goto(radio.name)"> Edit channel </td>
+        <td  (click)="deleteChannel(radio.name)"> delete channel </td>
+      </tr>
+    </table>
+  </div>
+
+
+
+  <div id="add">
+    <button routerLink="/newChannel"> Add a new channel </button>
+  </div>
+
+</body>
+

@@ -1,0 +1,147 @@
+body {
+  font-family: Roboto, serif;
+}
+#overall{
+  display: flex;
+  margin-top: 2%;
+}
+
+.radioName{
+  padding: 1% ;
+  margin: 5% 1% 1% 1%;
+
+}
+.radioName:hover{
+  background: gainsboro;
+}
+
+#radioGroup{
+  display: flex;
+}
+
+#radiolist{
+  width: 100% ;
+}
+
+#player{
+ width: 55%;
+  background: #ededed;
+}
+#play-button{
+  width: 5%;
+}
+#play{
+  width: 100%;
+  margin-left: 2%;
+  margin-bottom: 2%;
+}
+#pause{
+  width: 100%;
+  margin-left: 2%;
+  margin-bottom: 2%;
+  display: none;
+}
+
+.subtitle{
+  margin-top: 5%;
+  background: #ebebeb;
+}
+
+.subFav{
+  padding: 0.01%;
+  margin: 5% 1% 1% 1%;
+}
+
+.subFav:hover{
+  background: gainsboro;
+}
+
+#recent{
+  display: none;
+}
+
+.subRecent{
+  padding: 0.01%;
+  margin: 5% 1% 1% 1%;
+}
+
+.subRecent:hover{
+  background: gainsboro;
+}
+
+#favoris{
+  display: none;
+}
+
+#fav-icon-div{
+  width: 5%;
+}
+#fav-icon{
+  width: 100%;
+  margin-left: 2%;
+  margin-bottom: 2%;
+}
+
+#section{
+  width: 25%;
+  margin-right: 2% ;
+}
+
+#actualRadio{
+  margin-top: 2%;
+  text-align: center;
+}
+
+#fav-icon-full{
+  width: 100%;
+  margin-left: 2%;
+  margin-bottom: 2%;
+  display: none;
+}
+#section-img{
+  width: 2%;
+}
+
+#sectionSubtitle{
+  width: 100%;
+  display: flex;
+}
+
+.sectionSubtitle{
+  margin: auto;
+  padding: 8%;
+  font-size: 24px;
+}
+.sectionSubtitle:hover{
+  background: gainsboro;
+}
+
+#pochette {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#title{
+  display: block;
+  text-align: center;
+  margin-top: 2%;
+}
+
+#singer {
+  display: block;
+  text-align: center;
+  margin-top: 2%;
+}
+
+#player-bar{
+  width: 80%;
+}
+
+.list-group-item:hover{
+  background: gainsboro;
+}
+
+#controls{
+  display: flex;
+}

@@ -1,0 +1,77 @@
+<head>
+  <title>WebRadio</title>
+</head>
+
+<body>
+  <app-header></app-header>
+  <div id="overall">
+    <div id="section">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav m-auto ">
+              <a class="nav-link " aria-current="page" (click)="changeSection('radiolist')">Radios</a>
+              <a class="nav-link " (click)="changeSection('recent')">Recents</a>
+              <a class="nav-link "  (click)="changeSection('favoris')">Favorites</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div id="radiolist">
+        <ul class="list-group" *ngFor="let radio of radios" (click)="changeRadio(radio[1], radio[0])">
+          <li class="list-group-item">{{radio[0]}}</li>
+        </ul>
+      </div>
+
+      <div id="recent">
+        <ul class="list-group" *ngFor="let nv of recent" (click)="changeRadio(nv[1], nv[0])">
+          <li class="list-group-item">{{nv[0]}}</li>
+        </ul>
+      </div>
+
+      <div id="favoris">
+        <ul class="list-group" *ngFor="let nvFav of fav"  (click)="changeRadio(nvFav[1], nvFav[0])">
+          <li class="list-group-item">{{nvFav[0]}}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="player">
+
+      <div >
+        <img id="pochette" class="element-player" src="../../assets/img/pink-floyd.jpg" alt="actual music img">
+      </div>
+
+      <p id="actualRadio">{{actualRadio}} </p>
+      <p id="title" class="element-player">Pink Floyd</p>
+      <p id="singer" class="element-player">Another Brick In The Wall</p>
+
+      <br/>
+      <audio id="audio"  preload="metadata"></audio>
+      <br/>
+
+
+      <div id="controls">
+        <div id="play-button">
+          <img id="play" alt="play button" src="../../assets/img/play.png" (click)="play()">
+          <img id="pause" alt="pause button" src="../../assets/img/pause2.png" (click)="pause()">
+        </div>
+        <div id="player-bar">
+          <label for="myRange"></label><input type="range" min="0" max="100" value="50" step="10" class="slider" id="myRange" (change)="changeVolume()">
+        </div>
+        <div id="fav-icon-div">
+          <img  id="fav-icon" alt="favorite button icon" src="../../assets/img/heart.png" (click)="addFav(actualRadio)">
+          <img  id="fav-icon-full" alt="favorite button icon" src="../../assets/img/heart-full.png" (click)="addFav(actualRadio)">
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+  <button (click)="this.setSessionRecent();"> </button>
+
+</body>
