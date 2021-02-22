@@ -3,7 +3,10 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var mysql = require("mysql");
 const cors = require('cors');
+const urlMetadata = require('url-metadata');
+var radio = require("radio-stream");
 
+let data ;
 
 // DataBase
 
@@ -74,6 +77,31 @@ app.delete('/radio/delete/:name', async (req,res) => {
     if (err) throw err;
     return res.send(true);
   });
+});
+
+
+app.post('/stream', async (req, res) => {
+
+  url = req.query.url;
+  let data ;
+
+  var stream = radio.createReadStream(url);
+
+  stream.on("connect", function() {
+    //console.error(stream.headers);
+  });
+  //stream.on("data", function(chunk) {
+    //process.stdout.write(chunk);
+  //});
+  stream.on("metadata", function(title) {
+    console.log(title);
+    data = title;
+    stream.destroy();
+    return res.send(data);
+  });
+
+
+
 });
 
 

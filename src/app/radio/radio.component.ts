@@ -1,8 +1,9 @@
 import {Component, OnInit, AfterContentInit, ɵsetDocument, Inject} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {setFileSystem} from '@angular/compiler-cli/src/ngtsc/file_system';
+
 
 @Component({
   selector: 'app-radio',
@@ -11,7 +12,7 @@ import {setFileSystem} from '@angular/compiler-cli/src/ngtsc/file_system';
 })
 export class RadioComponent implements OnInit {
 
-  public data:any=[];
+  public data: any = [];
   radios = [];
   recent = [];
   fav = [];
@@ -22,12 +23,9 @@ export class RadioComponent implements OnInit {
 
   constructor(private http: HttpClient, public cookieService: CookieService) { }
 
-  link = 'http://localhost:8888/radio';
-
   changeVolume(){
     // @ts-ignore
     let valeur = document.getElementById('myRange').value;
-    console.log(valeur);
     // @ts-ignore
     document.getElementById('audio').volume = valeur/100;
   }
@@ -62,6 +60,8 @@ export class RadioComponent implements OnInit {
         inFav = true;
       }
     }
+
+    this.getStream(url);
 
     if(inFav){
       // @ts-ignore
@@ -110,7 +110,7 @@ export class RadioComponent implements OnInit {
   }
 
   getRadio(){
-    const res = this.http.get(this.link)
+    const res = this.http.get('http://localhost:8888/radio')
       .subscribe(result => {
         // @ts-ignore
         for (let i of result){
@@ -118,6 +118,84 @@ export class RadioComponent implements OnInit {
           this.radios.push([i.name, i.url]);
         }
       });
+  }
+
+  getStream(url: any){
+    const headers = new HttpHeaders()
+      .set('Authorization', 'my-auth-token')
+      .set('Content-Type', 'application/json');
+
+    this.http.post('http://localhost:8888/stream', '',{
+      headers,
+      params: {
+        url : url,
+      },
+      responseType : 'text',
+    }).subscribe( result => {
+      if (result) {
+        let words = result.split('-');
+        let verif;
+        if(words[0].includes('StreamTitle') && !words[0].includes('StreamUrl')){
+          this.directName(words);
+        }
+
+        if(words[0].includes('StreamTitle') && words[0].includes('StreamUrl')){
+          this.passByJsonUrl(words);
+        }
+      }
+    });
+
+  }
+
+  passByJsonUrl(chain: any[]){
+    const headers = new HttpHeaders({ 'Content-Type': 'text/xml' });
+    headers.set('Authorization', 'my-auth-token');
+    headers.set('Access-Control-Allow-Origin','*');
+    headers.append('Accept', 'text/xml');
+    headers.append('Content-Type', 'text/xml');
+
+
+    let text = chain[0].split(';');
+    let url = text[0].substr(12);
+    url = url.replace("'", "");
+    let http = 'http:';
+    http += url;
+    console.log(http);
+   this.http.get(http, {headers : new HttpHeaders({
+       'Access-Control-Allow-Origin':'*',
+       'Content-Type':'text/xml'
+     })})
+      .subscribe(result => {
+      // @ts-ignore
+     let infos = result;
+        console.log(infos)
+    });
+  }
+
+  directName(chain: any[]){
+    chain[0] = chain[0].substr(13);
+    let second = chain[1].split(';');
+    let title = chain[0];
+    let singer = second[0].replace('\'', '');
+    if (second[1] != ''){
+      let pochette = second[1].replace('StreamUrl=\'', '');
+      pochette = pochette.replace('\'', '');
+
+      // @ts-ignore
+      document.getElementById('pochette').setAttribute('src', pochette);
+    }
+    else {
+      // @ts-ignore
+      document.getElementById('pochette').setAttribute('src', '../../assets/img/no_image.png');
+    }
+
+    // @ts-ignore
+    console.log(title);
+    console.log(singer);
+    // @ts-ignore
+    document.getElementById('title').textContent = title;
+    // @ts-ignore
+    document.getElementById('singer').textContent = singer;
   }
 
   setSessionRecent(){
