@@ -1,9 +1,7 @@
 import {Component, OnInit, AfterContentInit, ɵsetDocument, Inject} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {setFileSystem} from '@angular/compiler-cli/src/ngtsc/file_system';
-
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-radio',
@@ -14,12 +12,15 @@ export class RadioComponent implements OnInit {
 
   public data: any = [];
   radios = [];
+  historic = {};
+  actualHisto = [];
   recent = [];
   fav = [];
   recentMax = 5 ;
   actualRadio = '';
   x = '';
   volume = 0;
+  sub: Subscription | undefined;
 
   constructor(private http: HttpClient, public cookieService: CookieService) { }
 
@@ -43,7 +44,12 @@ export class RadioComponent implements OnInit {
     localStorage.removeItem(key);
   }
 
-  changeRadio(url: string, name : string){  //Change the audio source and change the img
+  changeRadio(url: string, name : string, type : string){  //Change the audio source and change the img
+    // @ts-ignore
+    if (this.sub !== undefined) {
+      this.sub.unsubscribe();
+    }
+
     // @ts-ignore
     document.getElementById('audio').setAttribute('src', url);
     // @ts-ignore
@@ -60,9 +66,6 @@ export class RadioComponent implements OnInit {
         inFav = true;
       }
     }
-
-    this.getStream(url);
-
     if(inFav){
       // @ts-ignore
       document.getElementById('fav-icon-full').style.display = 'flex';
@@ -107,6 +110,9 @@ export class RadioComponent implements OnInit {
         }
       }
     }
+    const timer = interval(15000);
+    this.sub = timer.subscribe(val => this.getStream(url, type, name))
+
   }
 
   getRadio(){
@@ -115,12 +121,15 @@ export class RadioComponent implements OnInit {
         // @ts-ignore
         for (let i of result){
           // @ts-ignore
-          this.radios.push([i.name, i.url]);
+          this.radios.push([i.name, i.url, i.type]);
+          // @ts-ignore
+          this.historic[i.name] = [];
         }
       });
+
   }
 
-  getStream(url: any){
+  getStream(url: any, type: any, name: any){
     const headers = new HttpHeaders()
       .set('Authorization', 'my-auth-token')
       .set('Content-Type', 'application/json');
@@ -129,73 +138,91 @@ export class RadioComponent implements OnInit {
       headers,
       params: {
         url : url,
+        type : type
       },
-      responseType : 'text',
+      responseType : 'json',
     }).subscribe( result => {
       if (result) {
-        let words = result.split('-');
-        let verif;
-        if(words[0].includes('StreamTitle') && !words[0].includes('StreamUrl')){
-          this.directName(words);
-        }
+        let infos = result;
+        console.log(infos);
 
-        if(words[0].includes('StreamTitle') && words[0].includes('StreamUrl')){
-          this.passByJsonUrl(words);
+        // @ts-ignore
+        this.addToHisto(name, infos.title, infos.artist, infos.cover);
+        this.getActualHisto(name);
+
+        // @ts-ignore
+        if (infos.artist && infos.title){
+          // @ts-ignore
+          document.getElementById('title').textContent = infos.title;
+          // @ts-ignore
+          document.getElementById('singer').textContent = infos.artist;
+        }
+        // @ts-ignore
+        if (infos.cover){
+          // @ts-ignore
+          document.getElementById('pochette').setAttribute('src', infos.cover);
+          // @ts-ignore
+          document.getElementById('pochette').style.display = 'block';
+          // @ts-ignore
+          document.getElementById('no-pochette').style.display = 'none';
+        }
+        else {
+          // @ts-ignore
+          if (infos.radioCover){
+            // @ts-ignore
+            document.getElementById('pochette').setAttribute('src', infos.radioCover);
+            // @ts-ignore
+            document.getElementById('pochette').style.display = 'block';
+            // @ts-ignore
+            document.getElementById('no-pochette').style.display = 'none';
+          } else{
+            // @ts-ignore
+            document.getElementById('pochette').setAttribute('src', '');
+            // @ts-ignore
+            document.getElementById('pochette').style.display = 'none';
+            // @ts-ignore
+            document.getElementById('no-pochette').style.display = 'block';
+          }
         }
       }
     });
-
   }
 
-  passByJsonUrl(chain: any[]){
-    const headers = new HttpHeaders({ 'Content-Type': 'text/xml' });
-    headers.set('Authorization', 'my-auth-token');
-    headers.set('Access-Control-Allow-Origin','*');
-    headers.append('Accept', 'text/xml');
-    headers.append('Content-Type', 'text/xml');
+  addToHisto(radioName: any, songTitle: any, songArtist :any, songCover:any){
+    let date = new Date();
+    // @ts-ignore
+    date = date.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
 
+    let songExist = false;
+    // @ts-ignore
+    for (let i of this.historic[radioName]){
 
-    let text = chain[0].split(';');
-    let url = text[0].substr(12);
-    url = url.replace("'", "");
-    let http = 'http:';
-    http += url;
-    console.log(http);
-   this.http.get(http, {headers : new HttpHeaders({
-       'Access-Control-Allow-Origin':'*',
-       'Content-Type':'text/xml'
-     })})
-      .subscribe(result => {
-      // @ts-ignore
-     let infos = result;
-        console.log(infos)
-    });
+      if (i[0] == songTitle){
+        songExist = true
+      }
+    }
+
+    if (songExist == false){
+      if (songTitle !== 'pub' && songTitle !== ''){
+        // @ts-ignore
+        if (this.historic[radioName].length < 5){
+          // @ts-ignore
+          this.historic[radioName].push([songTitle, songArtist, songCover, date]);
+        }else {
+          // @ts-ignore
+          this.historic[radioName].shift();
+          // @ts-ignore
+          this.historic[radioName].push([songTitle, songArtist, songCover, date]);
+        }
+
+      }
+    }
   }
 
-  directName(chain: any[]){
-    chain[0] = chain[0].substr(13);
-    let second = chain[1].split(';');
-    let title = chain[0];
-    let singer = second[0].replace('\'', '');
-    if (second[1] != ''){
-      let pochette = second[1].replace('StreamUrl=\'', '');
-      pochette = pochette.replace('\'', '');
-
-      // @ts-ignore
-      document.getElementById('pochette').setAttribute('src', pochette);
-    }
-    else {
-      // @ts-ignore
-      document.getElementById('pochette').setAttribute('src', '../../assets/img/no_image.png');
-    }
-
+  getActualHisto(radioName: any){
     // @ts-ignore
-    console.log(title);
-    console.log(singer);
-    // @ts-ignore
-    document.getElementById('title').textContent = title;
-    // @ts-ignore
-    document.getElementById('singer').textContent = singer;
+    this.actualHisto = this.historic[radioName];
+    console.log(this.actualHisto);
   }
 
   setSessionRecent(){
@@ -203,7 +230,6 @@ export class RadioComponent implements OnInit {
       if (this.getLocal(i[0] + '-recent')){
         // @ts-ignore
         this.recent.push([i[0],i[1]]);
-
       }
     }
     let surplus = this.recent.length - 5;

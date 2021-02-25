@@ -21,28 +21,45 @@
       </nav>
 
       <div id="radiolist">
-        <ul class="list-group" *ngFor="let radio of radios" (click)="changeRadio(radio[1], radio[0])">
+        <ul class="list-group" *ngFor="let radio of radios" (click)="changeRadio(radio[1], radio[0], radio[2])">
           <li class="list-group-item">{{radio[0]}}</li>
         </ul>
       </div>
 
       <div id="recent">
-        <ul class="list-group" *ngFor="let nv of recent" (click)="changeRadio(nv[1], nv[0])">
+        <ul class="list-group" *ngFor="let nv of recent" (click)="changeRadio(nv[1], nv[0], nv[2])">
           <li class="list-group-item">{{nv[0]}}</li>
         </ul>
       </div>
 
       <div id="favoris">
-        <ul class="list-group" *ngFor="let nvFav of fav"  (click)="changeRadio(nvFav[1], nvFav[0])">
+        <ul class="list-group" *ngFor="let nvFav of fav"  (click)="changeRadio(nvFav[1], nvFav[0], nvFav[2])">
           <li class="list-group-item">{{nvFav[0]}}</li>
         </ul>
       </div>
+    </div>
+
+    <div id="histo">
+      <ul class="list-group pt-5 pr-3" >
+        <li class="list-group-item" *ngFor="let histo of actualHisto">
+          <img class="histo-img" src='{{histo[2]}}' alt="img of the song">
+          <div>
+            <p class="histo-title"> {{histo[0]}}</p>
+            <div id="subHisto">
+              <p class="histo-artist"> {{histo[1]}}</p>
+              <p class="histo-time"> {{histo[3]}} </p>
+            </div>
+          </div>
+        </li>
+
+      </ul>
     </div>
 
     <div id="player">
 
       <div >
         <img id="pochette" class="element-player" src="../../assets/img/pink-floyd.jpg" alt="actual music img">
+        <img id="no-pochette" class="element-player" src="../../assets/img/no_image.png" alt="actual music img">
       </div>
 
       <p id="actualRadio">{{actualRadio}} </p>

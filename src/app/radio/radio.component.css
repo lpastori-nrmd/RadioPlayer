@@ -117,6 +117,7 @@ body {
 }
 
 #pochette {
+  width: 50%;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -145,3 +146,33 @@ body {
 #controls{
   display: flex;
 }
+
+#no-pochette{
+  width: 50%;
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+#histo {
+
+  width: 20%;
+}
+.histo-img{
+  width: 15%;
+  margin-right: 10%;
+}
+.list-group-item{
+  display: flex;
+  margin-right: 10%;
+}
+.histo-title{
+  margin-right: 10%;
+}
+.histo-artist{
+  margin-right: 10%;
+}
+
+#subHisto{
+  display: flex;
+}
+

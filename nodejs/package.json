@@ -13,9 +13,12 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "http": "0.0.1-security",
     "http-errors": "^1.8.0",
     "mysql": "^2.18.1",
     "radio-stream": "0.0.1",
-    "url-metadata": "^2.5.0"
+    "unirest": "^0.6.0",
+    "url-metadata": "^2.5.0",
+    "xml2js": "^0.4.23"
   }
 }
